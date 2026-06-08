@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PackSlip — All-in-One Shopify Fulfillment, Tracking & Packing Slips</title>
+  <meta name="description" content="PackSlip is the all-in-one Shopify app for packing slips, bulk fulfillment, branded order tracking, WhatsApp & email alerts and more. 34 modules. One app. Free." />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    :root{ --bg:#06080f; --b1:#10b981; --b2:#22d3ee; --b3:#8b5cf6; }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html,body{ background:var(--bg); color:#e6edf6; font-family:'Satoshi','Plus Jakarta Sans',sans-serif; overflow-x:hidden; }
+    .display{ font-family:'Clash Display','Satoshi',sans-serif; letter-spacing:-.01em; }
+    p{ color:#cbd5e1; }
+
+    /* ---------- animated mesh background ---------- */
+    .bg-wrap{ position:fixed; inset:0; z-index:0; overflow:hidden; }
+    .orb{ position:absolute; border-radius:50%; filter:blur(90px); opacity:.55; }
+    .orb.a{ width:46vw;height:46vw; background:#10b981; top:-12%; left:-8%; animation:drift 22s ease-in-out infinite; }
+    .orb.b{ width:42vw;height:42vw; background:#8b5cf6; bottom:-15%; right:-10%; animation:drift 26s ease-in-out infinite reverse; }
+    .orb.c{ width:34vw;height:34vw; background:#22d3ee; top:40%; left:55%; opacity:.30; animation:drift 30s ease-in-out infinite; }
+    @keyframes drift{ 0%,100%{ transform:translate(0,0) scale(1);} 33%{ transform:translate(6vw,-5vw) scale(1.15);} 66%{ transform:translate(-5vw,4vw) scale(.92);} }
+    .grid-floor{ position:fixed; inset:auto 0 0 0; height:55vh; z-index:0; pointer-events:none;
+      background-image:linear-gradient(rgba(16,185,129,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(16,185,129,.10) 1px,transparent 1px);
+      background-size:46px 46px; transform:perspective(420px) rotateX(62deg); transform-origin:bottom; opacity:.5;
+      mask-image:linear-gradient(to top,#000,transparent 80%); -webkit-mask-image:linear-gradient(to top,#000,transparent 80%); }
+    .grain{ position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.04; mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+    .wrap{ max-width:1120px; margin:0 auto; padding:0 24px; position:relative; z-index:10; }
+    .grad-text{ background:linear-gradient(110deg,#34d399 0%,#22d3ee 45%,#a78bfa 90%); -webkit-background-clip:text; background-clip:text; color:transparent; background-size:200% auto; animation:hue 6s linear infinite; }
+    @keyframes hue{ to{ background-position:200% center; } }
+
+    .glass{ background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.09); backdrop-filter:blur(14px); }
+    .btn{ position:relative; display:inline-flex; align-items:center; gap:.5rem; font-weight:800; border-radius:16px; padding:15px 30px;
+      background:linear-gradient(110deg,#10b981,#0d9488); color:#fff; box-shadow:0 10px 30px rgba(16,185,129,.35); transition:transform .25s, box-shadow .25s; }
+    .btn:hover{ transform:translateY(-3px) scale(1.02); box-shadow:0 18px 50px rgba(16,185,129,.55); }
+    .btn-ghost{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); box-shadow:none; }
+    .btn-ghost:hover{ background:rgba(255,255,255,.1); box-shadow:none; }
+
+    /* ---------- 3D tilt ---------- */
+    .scene{ perspective:1400px; }
+    .tilt{ transform-style:preserve-3d; transition:transform .15s ease-out; will-change:transform; }
+    .tilt .pop{ transform:translateZ(40px); }
+
+    .reveal{ opacity:0; transform:translateY(40px); }
+    .float{ animation:fl 6s ease-in-out infinite; }
+    .float.s2{ animation-duration:7.5s; animation-delay:-2s; }
+    .float.s3{ animation-duration:9s; animation-delay:-4s; }
+    @keyframes fl{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-16px);} }
+
+    .marquee{ display:flex; gap:1rem; white-space:nowrap; animation:mq 32s linear infinite; width:max-content; }
+    .marquee:hover{ animation-play-state:paused; }
+    @keyframes mq{ to{ transform:translateX(-50%); } }
+    .mq-pill{ display:inline-flex; align-items:center; gap:.5rem; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09);
+      border-radius:999px; padding:.65rem 1.15rem; font-weight:700; font-size:.85rem; color:#cbd5e1; backdrop-filter:blur(8px); transition:.25s; }
+    .mq-pill:hover{ border-color:rgba(16,185,129,.5); color:#fff; transform:translateY(-2px); }
+    .mq-pill .d{ width:7px;height:7px;border-radius:50%;background:#34d399; }
+
+    .chip{ position:absolute; }
+    .faq-a{ max-height:0; overflow:hidden; transition:max-height .45s ease; }
+    .faq.open .faq-a{ max-height:260px; }
+    .faq.open .ic{ transform:rotate(45deg); }
+    .ic{ transition:transform .3s; }
+    ::selection{ background:#10b981; color:#04110b; }
+    .badge-dot{ width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.6); animation:pl 2s infinite; }
+    @keyframes pl{ 0%{ box-shadow:0 0 0 0 rgba(52,211,153,.6);} 70%{ box-shadow:0 0 0 10px rgba(52,211,153,0);} 100%{ box-shadow:0 0 0 0 rgba(52,211,153,0);} }
+  </style>
+</head>
+<body>
+
+  <div class="bg-wrap"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+  <div class="grid-floor"></div>
+  <div class="grain"></div>
+  <div id="progress" style="position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,#10b981,#22d3ee,#a78bfa)"></div>
+
+  <!-- NAV -->
+  <header id="nav" class="sticky top-0 z-50 transition-all duration-300">
+    <nav class="wrap flex items-center justify-between py-5">
+      <a href="#" class="flex items-center gap-2.5">
+        <span class="relative w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black display text-xl float"
+              style="background:linear-gradient(135deg,#10b981,#0d9488);box-shadow:0 8px 24px rgba(16,185,129,.5)">P
+          <span style="position:absolute;inset:-2px;border-radius:18px;border:1px solid rgba(52,211,153,.4)"></span>
+        </span>
+        <span class="font-extrabold text-xl">PackSlip</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-300">
+        <a href="#features" class="hover:text-white transition">Features</a>
+        <a href="#value" class="hover:text-white transition">Why us</a>
+        <a href="#how" class="hover:text-white transition">How it works</a>
+        <a href="#faq" class="hover:text-white transition">FAQ</a>
+      </div>
+      <a href="https://apps.shopify.com/packslip-dev" target="_blank" rel="noopener" class="btn !py-2.5 !px-5 text-sm">Install Free</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="wrap pt-14 pb-28 text-center scene">
+    <div class="reveal inline-flex items-center gap-2 glass px-4 py-1.5 rounded-full text-xs font-bold text-emerald-300 mb-7">
+      <span class="badge-dot"></span> 34 modules · One app · 100% Free
+    </div>
+
+    <h1 id="headline" class="display text-5xl sm:text-7xl md:text-[5.2rem] font-black leading-[1.02] max-w-4xl mx-auto">
+      <span class="hw inline-block">Run</span> <span class="hw inline-block">your</span> <span class="hw inline-block">whole</span> <span class="hw inline-block">store's</span><br>
+      <span class="hw inline-block grad-text">fulfillment</span> <span class="hw inline-block">in</span> <span class="hw inline-block">one</span> <span class="hw inline-block">app</span>
+    </h1>
+
+    <p class="reveal mt-7 text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+      Packing slips, bulk fulfillment, branded order tracking, WhatsApp &amp; email alerts, exports and more —
+      everything your Shopify store needs after checkout. Beautiful, fast and free.
+    </p>
+
+    <div class="reveal mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="https://apps.shopify.com/packslip-dev" target="_blank" rel="noopener" class="btn text-base w-full sm:w-auto justify-center">🚀 Install Free on Shopify</a>
+      <a href="#features" class="btn btn-ghost text-base w-full sm:w-auto justify-center">Explore features</a>
+    </div>
+    <p class="reveal mt-4 text-xs text-slate-400">No credit card · Installs in seconds · Works with any theme</p>
+
+    <!-- 3D hero scene -->
+    <div class="relative mt-20 max-w-4xl mx-auto" style="perspective:1600px">
+      <div id="hero3d" class="tilt reveal relative" style="transform:rotateX(14deg) rotateY(-8deg)">
+        <!-- floating chips -->
+        <div class="chip pop float glass rounded-2xl px-4 py-3 text-left hidden sm:block" style="top:-30px;left:-50px;z-index:20">
+          <p class="text-xs text-slate-300">New order 🎉</p><p class="text-sm font-bold text-white">#1042 · €183</p>
+        </div>
+        <div class="chip pop float s2 glass rounded-2xl px-4 py-3 text-left hidden sm:block" style="top:60px;right:-60px;z-index:20">
+          <p class="text-xs text-emerald-300 font-bold">✓ Shipped</p><p class="text-sm font-bold text-white">Tracking sent</p>
+        </div>
+        <div class="chip pop float s3 glass rounded-2xl px-4 py-3 text-left hidden sm:block" style="bottom:-26px;left:30px;z-index:20">
+          <p class="text-xs text-slate-300">WhatsApp</p><p class="text-sm font-bold text-white">💬 Delivered ✅</p>
+        </div>
+
+        <div class="rounded-[26px] p-3 glass" style="box-shadow:0 40px 90px rgba(0,0,0,.55)">
+          <div class="rounded-[18px] overflow-hidden" style="background:linear-gradient(160deg,#0c1322,#0a0f1a);border:1px solid rgba(255,255,255,.08)">
+            <div class="flex items-center gap-1.5 px-4 py-3 border-b border-white/5">
+              <span class="w-3 h-3 rounded-full" style="background:#ff5f57"></span>
+              <span class="w-3 h-3 rounded-full" style="background:#febc2e"></span>
+              <span class="w-3 h-3 rounded-full" style="background:#28c840"></span>
+              <span class="ml-3 text-xs text-slate-400">PackSlip — Dashboard</span>
+            </div>
+            <img src="landing-1.png" alt="PackSlip dashboard" class="w-full block" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <section class="py-10 overflow-hidden relative z-10">
+    <div style="-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)">
+      <div class="marquee">
+        <span class="mq-pill"><span class="d"></span>📦 Packing Slips</span>
+        <span class="mq-pill"><span class="d"></span>🚚 Bulk Fulfillment</span>
+        <span class="mq-pill"><span class="d"></span>📍 Branded Tracking</span>
+        <span class="mq-pill"><span class="d"></span>💬 WhatsApp Alerts</span>
+        <span class="mq-pill"><span class="d"></span>📧 Email Reports</span>
+        <span class="mq-pill"><span class="d"></span>📊 Order Exports</span>
+        <span class="mq-pill"><span class="d"></span>⭐ Product Reviews</span>
+        <span class="mq-pill"><span class="d"></span>🛒 Abandoned Cart</span>
+        <span class="mq-pill"><span class="d"></span>📥 Email Capture</span>
+        <span class="mq-pill"><span class="d"></span>🔔 Back in Stock</span>
+        <span class="mq-pill"><span class="d"></span>📦 Packing Slips</span>
+        <span class="mq-pill"><span class="d"></span>🚚 Bulk Fulfillment</span>
+        <span class="mq-pill"><span class="d"></span>📍 Branded Tracking</span>
+        <span class="mq-pill"><span class="d"></span>💬 WhatsApp Alerts</span>
+        <span class="mq-pill"><span class="d"></span>📧 Email Reports</span>
+        <span class="mq-pill"><span class="d"></span>📊 Order Exports</span>
+        <span class="mq-pill"><span class="d"></span>⭐ Product Reviews</span>
+        <span class="mq-pill"><span class="d"></span>🛒 Abandoned Cart</span>
+        <span class="mq-pill"><span class="d"></span>📥 Email Capture</span>
+        <span class="mq-pill"><span class="d"></span>🔔 Back in Stock</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="wrap py-20 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <div class="reveal"><div class="display text-5xl font-black grad-text" data-count="34">0</div><p class="mt-2 text-sm text-slate-300 font-semibold">Modules</p></div>
+    <div class="reveal"><div class="display text-5xl font-black grad-text" data-count="100">0</div><p class="mt-2 text-sm text-slate-300 font-semibold">% Free</p></div>
+    <div class="reveal"><div class="display text-5xl font-black grad-text">1</div><p class="mt-2 text-sm text-slate-300 font-semibold">App for all</p></div>
+    <div class="reveal"><div class="display text-5xl font-black grad-text">∞</div><p class="mt-2 text-sm text-slate-300 font-semibold">Orders</p></div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="wrap py-16">
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <p class="reveal text-emerald-300 font-bold text-sm uppercase tracking-[.2em]">Features</p>
+      <h2 class="reveal display text-3xl sm:text-5xl font-black mt-3">Everything after checkout</h2>
+      <p class="reveal text-slate-300 mt-4">One install. Every fulfillment tool. No add-ons, no upsells.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 scene" id="cards">
+      <div class="reveal tilt glass rounded-2xl p-6"><div class="pop"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.25)">📦</div><h3 class="text-lg font-extrabold">Packing Slips</h3><p class="text-sm text-slate-300 mt-2 leading-relaxed">Print branded packing slips for any order. Custom templates, logo, colours and fonts.</p></div></div>
+      <div class="reveal tilt glass rounded-2xl p-6"><div class="pop"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.25)">🚚</div><h3 class="text-lg font-extrabold">Bulk Fulfillment</h3><p class="text-sm text-slate-300 mt-2 leading-relaxed">Fulfill hundreds of orders in one click. Upload tracking via CSV and auto-notify buyers.</p></div></div>
+      <div class="reveal tilt glass rounded-2xl p-6"><div class="pop"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.25)">📍</div><h3 class="text-lg font-extrabold">Branded Tracking</h3><p class="text-sm text-slate-300 mt-2 leading-relaxed">Keep customers on your store — progress bar, timeline and full branding.</p></div></div>
+      <div class="reveal tilt glass rounded-2xl p-6"><div class="pop"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.25)">💬</div><h3 class="text-lg font-extrabold">WhatsApp &amp; Email</h3><p class="text-sm text-slate-300 mt-2 leading-relaxed">Automatic order, shipping and delivery alerts. Fewer "where is my order?" tickets.</p></div></div>
+      <div class="reveal tilt glass rounded-2xl p-6"><div class="pop"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.25)">📊</div><h3 class="text-lg font-extrabold">Exports &amp; Reports</h3><p class="text-sm text-slate-300 mt-2 leading-relaxed">Export orders to CSV/XLSX for any 3PL. Daily summaries and value reports.</p></div></div>
+      <div class="reveal tilt glass rounded-2xl p-6"><div class="pop"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4" style="background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.25)">🪄</div><h3 class="text-lg font-extrabold">Storefront Boosters</h3><p class="text-sm text-slate-300 mt-2 leading-relaxed">Reviews, abandoned cart, email capture, back-in-stock, trust badges — built in.</p></div></div>
+    </div>
+  </section>
+
+  <!-- SHOWCASE -->
+  <section id="showcase" class="wrap py-16">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <p class="reveal text-emerald-300 font-bold text-sm uppercase tracking-[.2em]">See it in action</p>
+      <h2 class="reveal display text-3xl sm:text-5xl font-black mt-3">Beautiful, right inside Shopify</h2>
+      <p class="reveal text-slate-300 mt-4">All 34 modules in one clean dashboard — no clutter, no extra logins.</p>
+    </div>
+    <div class="reveal scene">
+      <div class="tilt rounded-[26px] p-3 glass mx-auto max-w-4xl" style="box-shadow:0 40px 90px rgba(0,0,0,.5)">
+        <div class="rounded-[18px] overflow-hidden border border-white/10">
+          <div class="flex items-center gap-1.5 px-4 py-3 border-b border-white/5">
+            <span class="w-3 h-3 rounded-full" style="background:#ff5f57"></span>
+            <span class="w-3 h-3 rounded-full" style="background:#febc2e"></span>
+            <span class="w-3 h-3 rounded-full" style="background:#28c840"></span>
+            <span class="ml-3 text-xs text-slate-400">PackSlip — Modules</span>
+          </div>
+          <img src="landing-2.png" alt="PackSlip modules" class="w-full block" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUE -->
+  <section id="value" class="wrap py-16">
+    <div class="reveal glass rounded-[28px] p-8 sm:p-12">
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <p class="text-emerald-300 font-bold text-sm uppercase tracking-[.2em]">Save money</p>
+          <h2 class="display text-3xl sm:text-4xl font-black mt-3 leading-tight">One app instead of <span class="grad-text">five</span></h2>
+          <p class="text-slate-300 mt-4 leading-relaxed">Most stores pay for separate apps for slips, fulfillment, tracking and alerts. PackSlip replaces them all — in a single free install.</p>
+          <a href="https://apps.shopify.com/packslip-dev" target="_blank" rel="noopener" class="btn mt-7">Replace them free →</a>
+        </div>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 glass rounded-xl px-4 py-3"><span class="text-rose-400 line-through text-sm flex-1">Packing slip app · $10/mo</span><span class="text-emerald-300 font-bold text-sm">✓ Included</span></div>
+          <div class="flex items-center gap-3 glass rounded-xl px-4 py-3"><span class="text-rose-400 line-through text-sm flex-1">Order tracking app · $12/mo</span><span class="text-emerald-300 font-bold text-sm">✓ Included</span></div>
+          <div class="flex items-center gap-3 glass rounded-xl px-4 py-3"><span class="text-rose-400 line-through text-sm flex-1">Bulk fulfillment app · $15/mo</span><span class="text-emerald-300 font-bold text-sm">✓ Included</span></div>
+          <div class="flex items-center gap-3 glass rounded-xl px-4 py-3"><span class="text-rose-400 line-through text-sm flex-1">WhatsApp / email alerts · $19/mo</span><span class="text-emerald-300 font-bold text-sm">✓ Included</span></div>
+          <div class="flex items-center gap-3 rounded-xl px-4 py-3" style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.4)"><span class="font-extrabold text-sm flex-1">PackSlip — all of the above</span><span class="grad-text font-black display text-lg">$0</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how" class="wrap py-20">
+    <div class="text-center mb-14">
+      <p class="reveal text-emerald-300 font-bold text-sm uppercase tracking-[.2em]">How it works</p>
+      <h2 class="reveal display text-3xl sm:text-5xl font-black mt-3">Live in under a minute</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 scene">
+      <div class="reveal tilt glass rounded-2xl p-7 text-center"><div class="pop"><div class="display text-5xl font-black grad-text mb-3">1</div><h3 class="font-extrabold text-lg">Install free</h3><p class="text-sm text-slate-300 mt-2">Add PackSlip from the Shopify App Store. No card, no setup fee.</p></div></div>
+      <div class="reveal tilt glass rounded-2xl p-7 text-center"><div class="pop"><div class="display text-5xl font-black grad-text mb-3">2</div><h3 class="font-extrabold text-lg">Open dashboard</h3><p class="text-sm text-slate-300 mt-2">All 34 modules unlock instantly inside your Shopify admin.</p></div></div>
+      <div class="reveal tilt glass rounded-2xl p-7 text-center"><div class="pop"><div class="display text-5xl font-black grad-text mb-3">3</div><h3 class="font-extrabold text-lg">Start fulfilling</h3><p class="text-sm text-slate-300 mt-2">Print, bulk-fulfill, track and notify — all in one place.</p></div></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap py-20">
+    <div class="reveal relative overflow-hidden rounded-[28px] p-10 sm:p-16 text-center" style="border:1px solid rgba(16,185,129,.3);background:radial-gradient(130% 130% at 50% 0%, rgba(16,185,129,.20), rgba(6,8,15,0) 62%)">
+      <div class="inline-flex items-center gap-2 glass px-4 py-1.5 rounded-full text-xs font-bold text-emerald-300 mb-6"><span class="badge-dot"></span> Limited-time launch offer</div>
+      <h2 class="display text-4xl sm:text-6xl font-black">Free to install.<br class="sm:hidden"> Free to use.</h2>
+      <p class="text-slate-300 mt-4 max-w-lg mx-auto">Get every module, unlimited, at no charge. Be one of the first stores running their whole fulfillment on PackSlip.</p>
+      <a href="https://apps.shopify.com/packslip-dev" target="_blank" rel="noopener" class="btn mt-9 text-lg !px-10 !py-4">🚀 Install PackSlip Free</a>
+      <p class="text-xs text-slate-400 mt-4">Works with any Shopify theme · 2026-04 API · GDPR compliant</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="wrap py-16 max-w-3xl">
+    <h2 class="reveal display text-3xl sm:text-4xl font-black text-center mb-10">Questions, answered</h2>
+    <div class="space-y-3">
+      <div class="faq reveal glass rounded-2xl p-5 cursor-pointer"><div class="flex items-center justify-between"><h3 class="font-bold">Is PackSlip really free?</h3><span class="ic text-emerald-300 text-2xl font-light">+</span></div><div class="faq-a"><p class="text-sm text-slate-300 mt-3">Yes — all 34 modules are completely free to install and use right now. No hidden fees, no locked features.</p></div></div>
+      <div class="faq reveal glass rounded-2xl p-5 cursor-pointer"><div class="flex items-center justify-between"><h3 class="font-bold">Does it work with my theme?</h3><span class="ic text-emerald-300 text-2xl font-light">+</span></div><div class="faq-a"><p class="text-sm text-slate-300 mt-3">Absolutely. PackSlip runs inside your Shopify admin and its storefront features install on any theme in one click.</p></div></div>
+      <div class="faq reveal glass rounded-2xl p-5 cursor-pointer"><div class="flex items-center justify-between"><h3 class="font-bold">Can I bulk-import tracking numbers?</h3><span class="ic text-emerald-300 text-2xl font-light">+</span></div><div class="faq-a"><p class="text-sm text-slate-300 mt-3">Yes. Upload a CSV with order and tracking numbers — PackSlip fulfills them in one click and notifies your customers.</p></div></div>
+      <div class="faq reveal glass rounded-2xl p-5 cursor-pointer"><div class="flex items-center justify-between"><h3 class="font-bold">Is my data safe?</h3><span class="ic text-emerald-300 text-2xl font-light">+</span></div><div class="faq-a"><p class="text-sm text-slate-300 mt-3">PackSlip only accesses the Shopify data it needs via the official API and never sells your data. See our <a href="https://app.arsdeveloper.co.uk/legal/privacy" class="text-emerald-300 underline">privacy policy</a>.</p></div></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 relative z-10">
+    <div class="wrap py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2.5"><span class="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black display" style="background:linear-gradient(135deg,#10b981,#0d9488)">P</span><span class="font-extrabold">PackSlip</span></div>
+      <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-300">
+        <a href="https://apps.shopify.com/packslip-dev" target="_blank" rel="noopener" class="hover:text-white transition">Install</a>
+        <a href="https://app.arsdeveloper.co.uk/legal/privacy" class="hover:text-white transition">Privacy</a>
+        <a href="https://app.arsdeveloper.co.uk/legal/terms" class="hover:text-white transition">Terms</a>
+        <a href="https://app.arsdeveloper.co.uk/legal/refund" class="hover:text-white transition">Refund</a>
+      </div>
+      <p class="text-xs text-slate-300 font-medium">© 2026 PackSlip · ARS Developer</p>
+    </div>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero headline word stagger
+    gsap.set('.hw', { yPercent:120, opacity:0 });
+    gsap.to('.hw', { yPercent:0, opacity:1, duration:1, ease:'power4.out', stagger:.06, delay:.15 });
+
+    // Generic reveals
+    gsap.utils.toArray('.reveal').forEach((el) => {
+      gsap.to(el, { opacity:1, y:0, duration:.9, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 90%' } });
+    });
+
+    // Counters
+    gsap.utils.toArray('[data-count]').forEach((el) => {
+      const t = +el.getAttribute('data-count'); const o = { v:0 };
+      ScrollTrigger.create({ trigger:el, start:'top 92%', once:true,
+        onEnter:() => gsap.to(o, { v:t, duration:1.6, ease:'power2.out', onUpdate:() => el.textContent = Math.round(o.v) }) });
+    });
+
+    // FAQ
+    document.querySelectorAll('.faq').forEach((it) => it.addEventListener('click', () => it.classList.toggle('open')));
+
+    // 3D tilt for cards (desktop)
+    function bindTilt(el, max){
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - .5;
+        const py = (e.clientY - r.top) / r.height - .5;
+        el.style.transform = `rotateY(${px*max}deg) rotateX(${-py*max}deg)`;
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = 'rotateY(0) rotateX(0)'; });
+    }
+    if (window.innerWidth > 820){
+      document.querySelectorAll('#cards .tilt, #how .tilt').forEach((c) => bindTilt(c, 10));
+      document.querySelectorAll('#showcase .tilt').forEach((c) => bindTilt(c, 5));
+    }
+
+    // Hero 3D follows mouse
+    const hero = document.getElementById('hero3d');
+    window.addEventListener('mousemove', (e) => {
+      if (window.innerWidth < 820 || !hero) return;
+      const x = (e.clientX / window.innerWidth - .5);
+      const y = (e.clientY / window.innerHeight - .5);
+      hero.style.transform = `rotateX(${14 - y*12}deg) rotateY(${-8 + x*16}deg)`;
+    });
+
+    // Parallax orbs + progress + nav
+    const nav = document.getElementById('nav'), progress = document.getElementById('progress');
+    const orbs = document.querySelectorAll('.orb');
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement, y = h.scrollTop;
+      const pct = (y / (h.scrollHeight - h.clientHeight)) * 100;
+      if (progress) progress.style.width = pct + '%';
+      if (nav){ if (y > 20){ nav.style.background='rgba(6,8,15,.7)'; nav.style.backdropFilter='blur(16px)'; nav.style.borderBottom='1px solid rgba(255,255,255,.06)'; } else { nav.style.background='transparent'; nav.style.backdropFilter='none'; nav.style.borderBottom='none'; } }
+      orbs.forEach((o,i) => { o.style.transform = `translateY(${y * (0.04 + i*0.02)}px)`; });
+    });
+  </script>
+</body>
+</html>

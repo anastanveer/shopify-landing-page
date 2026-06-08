@@ -22,6 +22,7 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 # Security headers
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
+  Header set X-Robots-Tag "index, follow"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
 </IfModule>

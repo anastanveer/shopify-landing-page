@@ -1,0 +1,27 @@
+# PackSlip
+
+> PackSlip is a free, all-in-one Shopify app for order fulfillment: packing slips, bulk fulfillment, branded order tracking, and WhatsApp & email notifications. 34 modules in one app, free to install.
+
+## About
+- Name: PackSlip
+- Vendor: ARS Developer
+- Platform: Shopify (embedded app)
+- Price: Free to install and use — all 34 modules included, no paid tiers
+- Install: https://apps.shopify.com/packslip-dev
+- Website: https://packslip.arsdeveloper.co.uk
+
+## Key features
+- Packing slips: print branded packing slips for any order (custom templates, logo, colours, fonts).
+- Bulk fulfillment: fulfill hundreds of orders in one click; upload tracking numbers via CSV; auto-notify buyers.
+- Branded order tracking page: customers track on your own store with a progress bar and timeline.
+- WhatsApp & email alerts: automatic order, shipping and delivery notifications to reduce "where is my order?" tickets.
+- Exports & reports: CSV / XLSX order exports for any 3PL, daily summary emails, value reports.
+- Storefront boosters: product reviews, abandoned cart recovery, email capture, back-in-stock alerts, trust badges.
+
+## Best for
+Shopify merchants who want a single free app to handle everything after checkout — fulfillment, tracking and customer notifications.
+
+## Links
+- Install (Shopify App Store): https://apps.shopify.com/packslip-dev
+- Privacy policy: https://app.arsdeveloper.co.uk/legal/privacy
+- Terms of service: https://app.arsdeveloper.co.uk/legal/terms
